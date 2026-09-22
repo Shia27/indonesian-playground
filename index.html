@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Escape the Backrooms | Indonesian Playground</title>
+<style>
+:root{--yellow:#e6d36f;--paper:#f3e9ad;--dark:#151611;--panel:#1b1c16;--floor:#aaa66e;--floor2:#b5b17a;--wall:#65674b;--green:#7f9855}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#0d0e0b;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;touch-action:manipulation}
+.app{width:min(100%,920px);margin:auto;padding:10px}
+.header{background:var(--panel);border:2px solid #3b3c2d;border-radius:15px;padding:10px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 8px 24px #0009}
+.brand{display:flex;align-items:center;gap:9px}.brandIcon{font-size:30px}.title{font-weight:1000;font-size:clamp(21px,4vw,31px);line-height:1}.subtitle{font-size:9px;color:#c6c39a;letter-spacing:.08em;margin-top:4px}
+.mission{background:var(--yellow);color:#25261c;padding:7px 10px;border-radius:7px;text-align:center;font-weight:950;font-size:11px}.mission span{display:block;font-size:9px;margin-top:2px}
+.teacher{border:0;background:#2b2c22;color:#d9d59e;border-radius:8px;padding:7px 9px;font-size:18px;cursor:pointer}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 275px;gap:9px;margin-top:9px}.panel{background:var(--panel);border:2px solid #3b3c2d;border-radius:12px;padding:8px;box-shadow:0 8px 24px #0009}
+.mazeWrap{background:#25261b;border-radius:8px;padding:4px}.maze{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(12,1fr);gap:2px}
+.tile{position:relative;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--floor)}
+.tile:nth-child(even){background:var(--floor2)}.tile.wall{background:var(--wall)}.tile.wall:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,#55573f22 0 10px,transparent 10px 21px)}
+.tile img{width:78%;height:78%;object-fit:contain;position:relative;z-index:2}.tile.exit{background:var(--green)}
+.tile.monsterNear{background:#91504a;animation:pulse .55s infinite alternate}@keyframes pulse{to{filter:brightness(1.2)}}
+.marker{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,4vw,27px);z-index:1;opacity:.9}
+.marker.eye{background:#d8d18a22}.marker.ear{background:#8ca05a22}.marker.wait{background:#6d805522}.marker.start{background:#d0bb5622}
+.info{display:flex;flex-direction:column;gap:8px}.objective{background:#28291e;border-radius:9px;padding:10px;text-align:center;font-weight:900}.objective b{color:#eee3a0}
+.status{min-height:52px;background:#28291e;border-radius:9px;padding:9px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:850}
+.hud{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;font-weight:800}.hud div{background:#28291e;border-radius:8px;padding:7px;text-align:center}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.ctrl{min-height:60px;border:0;border-radius:10px;background:var(--paper);color:#28281e;font-weight:1000;font-size:clamp(11px,2vw,15px);box-shadow:0 3px #a79b55;cursor:pointer}.ctrl:active{transform:translateY(2px);box-shadow:0 1px #a79b55}.stop{grid-column:1/-1;background:#ddd49a}
+.result{min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:950}.win,.lose{padding:9px;border-radius:8px;width:100%}.win{background:#718b50}.lose{background:#8b3b33}
+.reset{width:100%;border:0;border-radius:9px;background:var(--yellow);color:#28281d;padding:9px;font-weight:950;cursor:pointer}.tip{font-size:9px;color:#969783;text-align:center}
+.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.overlay.open{display:flex}
+.modal{width:min(92vw,430px);background:#1a1b15;border:2px solid #55563e;border-radius:15px;padding:16px;box-shadow:0 15px 45px #000}
+.modal h2{margin:0 0 12px;font-size:20px}.setting{margin:13px 0}.setting label{display:block;font-size:11px;color:#c7c59c;font-weight:900;letter-spacing:.06em;margin-bottom:6px}
+.options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.option{border:1px solid #57583f;background:#292a20;color:#eee6ac;border-radius:8px;padding:9px 4px;font-weight:900;cursor:pointer}.option.active{background:var(--yellow);color:#27281d;border-color:var(--yellow)}
+.maps{grid-template-columns:repeat(3,1fr)}.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:15px}.modalActions button{border:0;border-radius:9px;padding:10px;font-weight:950;cursor:pointer}.close{background:#45463a;color:white}.apply{background:var(--yellow);color:#29291f}
+.wordCard{display:none;background:#e8dda0;color:#28281e;border-radius:9px;padding:10px;text-align:center;border:2px solid #cfc27a}.wordCard.show{display:block}.word{font-size:25px;font-weight:1000}.wordSub{font-size:10px;font-weight:700;margin-top:2px}.wordBtn{margin-top:7px;border:0;background:#292a20;color:#eee6ac;border-radius:7px;padding:7px 13px;font-weight:950}
+@media(max-width:700px){.main{grid-template-columns:1fr}.info{order:2}.header{align-items:flex-start}.mission{min-width:110px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand"><div class="brandIcon">🏃</div><div><div class="title">ESCAPE THE BACKROOMS</div><div class="subtitle">GUNAKAN BAHASA INDONESIA UNTUK KELUAR</div></div></div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="mission">MISI 1<span>TEMUKAN PINTU KELUAR</span><span>Hati-hati dengan monster!</span></div>
+    <button class="teacher" id="teacherBtn" aria-label="Teacher settings">⚙️</button>
+  </div>
+</header>
+<main class="main">
+<section class="panel"><div class="mazeWrap"><div id="maze" class="maze"></div></div></section>
+<section class="panel info">
+  <div class="objective">🚪 TUJUAN: <b>CAPAI PINTU KELUAR</b></div>
+  <div id="status" class="status">Cari pintu keluar dan hindari semua monster!</div>
+  <div id="wordCard" class="wordCard"><div id="word" class="word"></div><div id="wordSub" class="wordSub"></div><button class="wordBtn" id="wordDone">OK</button></div>
+  <div class="hud"><div>👤 MONSTER: <span id="monsterCount">3</span></div><div>👣 LANGKAH: <span id="steps">0</span></div></div>
+  <div class="controls">
+    <button class="ctrl" data-action="up">ATAS</button><button class="ctrl" data-action="down">BAWAH</button><button class="ctrl" data-action="left">KIRI</button><button class="ctrl" data-action="right">KANAN</button><button class="ctrl stop" data-action="stop">BERHENTI</button>
+  </div>
+  <div id="result" class="result"></div>
+  <button id="reset" class="reset">↻ COBA LAGI</button>
+  <div class="tip">Ingat: ATAS · BAWAH · KIRI · KANAN · BERHENTI</div>
+</section>
+</main>
+</div>
+
+<div class="overlay" id="teacherOverlay">
+ <div class="modal">
+  <h2>⚙️ TEACHER SETTINGS</h2>
+  <div class="setting"><label>JUMLAH MONSTER</label><div class="options" id="monsterOptions">
+    <button class="option" data-monsters="1">1</button><button class="option" data-monsters="2">2</button><button class="option" data-monsters="3">3</button><button class="option" data-monsters="4">4</button>
+  </div></div>
+  <div class="setting"><label>KECEPATAN MONSTER</label><div class="options" id="speedOptions">
+    <button class="option" data-speed="slow">PELAN</button><button class="option" data-speed="normal">NORMAL</button><button class="option" data-speed="fast">CEPAT</button>
+  </div></div>
+  <div class="setting"><label>MAP</label><div class="options maps" id="mapOptions">
+    <button class="option" data-map="1">MAP 1</button><button class="option" data-map="2">MAP 2</button><button class="option" data-map="random">RANDOM</button>
+  </div></div>
+  <div class="setting"><label>WEEK</label><div class="options maps" id="weekOptions">
+    <button class="option active" data-week="2">WEEK 2</button><button class="option" data-week="3">WEEK 3</button>
+  </div></div>
+  <div class="modalActions"><button class="close" id="closeTeacher">TUTUP</button><button class="apply" id="applyTeacher">MULAI BARU</button></div>
+ </div>
+</div>
+
+<script>
+const SIZE=12;
+
+const MAPS={
+1:[
+"P...........",
+".###.#####..",
+"...#.....#..",
+".#.#.###.#..",
+".#...#...#..",
+".###.#.###..",
+".....#......",
+".#####.####.",
+".....#......",
+".###.#.###..",
+"...#.....#..",
+"...########E"
+],
+2:[
+"P....#......",
+".##..#..###.",
+"...#.#......",
+".#.#.######.",
+".#.#........",
+".#..#####.#.",
+".#........#.",
+".######.#.#.",
+"......#.#...",
+".####.#.###.",
+".....#......",
+".....#####.E"
+]};
+
+const SPAWNS={
+1:[{r:2,c:7},{r:6,c:10},{r:8,c:4},{r:4,c:2}],
+2:[{r:2,c:10},{r:4,c:8},{r:8,c:2},{r:10,c:5}]
+};
+
+const WORDS={
+2:[
+ {r:1,c:1,word:"TUNGGU",sub:"Tunggu = wait. Say it, then press OK.",icon:"⏳"},
+ {r:5,c:1,word:"LIHAT",sub:"Lihat = look. What do you see?",icon:"👀"},
+ {r:7,c:7,word:"DENGARKAN",sub:"Dengarkan = listen. Listen for danger!",icon:"👂"},
+ {r:10,c:8,word:"MULAI",sub:"Mulai = start. Siap? Mulai!",icon:"▶️"}
+],
+3:[
+ {r:1,c:1,word:"TUNGGU",sub:"Tunggu = wait. Say it, then press OK.",icon:"⏳"},
+ {r:5,c:1,word:"LIHAT",sub:"Lihat = look. What do you see?",icon:"👀"},
+ {r:7,c:7,word:"DENGARKAN",sub:"Dengarkan = listen. Listen for danger!",icon:"👂"},
+ {r:10,c:8,word:"MULAI",sub:"Mulai = start. Siap? Mulai!",icon:"▶️"}
+]};
+
+let settings={monsters:3,speed:"normal",map:"1",week:2};
+let activeMap=MAPS[1],player={r:0,c:0},monsters=[],steps=0,gameOver=false,escaped=false,stopped=false;
+let currentWord=null;
+
+const maze=document.getElementById("maze"),status=document.getElementById("status"),result=document.getElementById("result"),stepEl=document.getElementById("steps"),monsterCount=document.getElementById("monsterCount"),wordCard=document.getElementById("wordCard"),word=document.getElementById("word"),wordSub=document.getElementById("wordSub");
+
+function isWall(r,c){return r<0||r>=SIZE||c<0||c>=SIZE||activeMap[r][c]==="#"}
+function chooseMap(){
+ if(settings.map==="random") return Math.random()<.5?1:2;
+ return Number(settings.map);
+}
+function resetGame(){
+ const chosen=chooseMap(); activeMap=MAPS[chosen];
+ player={r:0,c:0}; steps=0; gameOver=false; escaped=false; stopped=false; currentWord=null;
+ wordCard.classList.remove("show"); result.innerHTML="";
+ monsters=SPAWNS[chosen].slice(0,settings.monsters).map(m=>({...m}));
+ status.textContent="Cari pintu keluar dan hindari semua monster!";
+ render();
+}
+function render(){
+ maze.innerHTML="";
+ for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++){
+  const tile=document.createElement("div"); tile.className="tile";
+  if(isWall(r,c))tile.classList.add("wall");
+  if(r===11&&c===11){tile.classList.add("exit");tile.innerHTML='<img src="assets/door.svg" alt="Pintu keluar">';}
+  const marker=(WORDS[settings.week]||[]).find(w=>w.r===r&&w.c===c);
+  if(marker&&!isWall(r,c)&&!(r===player.r&&c===player.c)){
+    const m=document.createElement("div");m.className="marker";m.textContent=marker.icon;tile.appendChild(m);
+  }
+  if(r===8&&c===2&&!isWall(r,c))tile.innerHTML='<img src="assets/crate.svg" alt="">';
+  const mi=monsters.findIndex(m=>m.r===r&&m.c===c);
+  if(mi>=0){const d=Math.abs(player.r-monsters[mi].r)+Math.abs(player.c-monsters[mi].c);if(d<=2)tile.classList.add("monsterNear");tile.innerHTML='<img src="assets/monster.svg" alt="Monster">';}
+  if(r===player.r&&c===player.c)tile.innerHTML='<img src="assets/player.svg" alt="Pemain">';
+  maze.appendChild(tile);
+ }
+ stepEl.textContent=steps;monsterCount.textContent=monsters.length;
+}
+function caught(){gameOver=true;result.innerHTML='<div class="lose">👹 TERTANGKAP! Coba lagi.</div>';status.textContent="Monster menang! Kamu tertangkap.";render()}
+function escapedGame(){escaped=true;result.innerHTML='<div class="win">🚪 KAMU BERHASIL KELUAR!</div>';status.textContent="🎉 Berhasil! Kamu menemukan pintu keluar!";render()}
+function monsterEvery(){return settings.speed==="slow"?3:settings.speed==="fast"?1:2}
+function moveMonsters(){
+ if(stopped||steps%monsterEvery()!==0)return;
+ monsters=monsters.map(monster=>{
+  const candidates=[{r:monster.r-1,c:monster.c},{r:monster.r+1,c:monster.c},{r:monster.r,c:monster.c-1},{r:monster.r,c:monster.c+1}]
+   .filter(p=>!isWall(p.r,p.c));
+  candidates.sort((a,b)=>(Math.abs(a.r-player.r)+Math.abs(a.c-player.c))-(Math.abs(b.r-player.r)+Math.abs(b.c-player.c)));
+  return candidates[0]||monster;
+ });
+ if(monsters.some(m=>m.r===player.r&&m.c===player.c))caught();
+}
+function triggerWord(){
+ const found=(WORDS[settings.week]||[]).find(w=>w.r===player.r&&w.c===player.c);
+ if(!found)return false;
+ currentWord=found;word.textContent=found.icon+" "+found.word;wordSub.textContent=found.sub;wordCard.classList.add("show");
+ status.textContent="Katakan kata Indonesianya!";
+ return true;
+}
+function move(action){
+ if(gameOver||escaped||currentWord)return;
+ if(action==="stop"){stopped=true;status.textContent="🛑 BERHENTI. Tenang... monster tidak bergerak sekarang.";render();return}
+ const delta={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]}[action];if(!delta)return;
+ const nr=player.r+delta[0],nc=player.c+delta[1];
+ if(isWall(nr,nc)){status.textContent="🧱 Tembok! Cari jalan lain.";return}
+ player={r:nr,c:nc};steps++;
+ if(player.r===11&&player.c===11){escapedGame();return}
+ if(monsters.some(m=>m.r===player.r&&m.c===player.c)){caught();return}
+ if(triggerWord()){render();return}
+ if(stopped){stopped=false;status.textContent="▶️ Jalan lagi. Hati-hati dengan monster!";}else{moveMonsters()}
+ if(!gameOver)status.textContent=monsters.some(m=>Math.abs(player.r-m.r)+Math.abs(player.c-m.c)<=2)?"👀 MONSTER DEKAT! Lari!":"Cari pintu keluar...";
+ render();
+}
+document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>move(b.dataset.action)));
+document.getElementById("reset").addEventListener("click",resetGame);
+document.getElementById("wordDone").addEventListener("click",()=>{wordCard.classList.remove("show");currentWord=null;status.textContent="Bagus! Teruskan mencari pintu.";moveMonsters();render()});
+
+function updateOptions(){
+ document.querySelectorAll("#monsterOptions .option").forEach(b=>b.classList.toggle("active",Number(b.dataset.monsters)===settings.monsters));
+ document.querySelectorAll("#speedOptions .option").forEach(b=>b.classList.toggle("active",b.dataset.speed===settings.speed));
+ document.querySelectorAll("#mapOptions .option").forEach(b=>b.classList.toggle("active",b.dataset.map===settings.map));
+ document.querySelectorAll("#weekOptions .option").forEach(b=>b.classList.toggle("active",Number(b.dataset.week)===settings.week));
+}
+document.querySelectorAll("#monsterOptions .option").forEach(b=>b.onclick=()=>{settings.monsters=Number(b.dataset.monsters);updateOptions()});
+document.querySelectorAll("#speedOptions .option").forEach(b=>b.onclick=()=>{settings.speed=b.dataset.speed;updateOptions()});
+document.querySelectorAll("#mapOptions .option").forEach(b=>b.onclick=()=>{settings.map=b.dataset.map;updateOptions()});
+document.querySelectorAll("#weekOptions .option").forEach(b=>b.onclick=()=>{settings.week=Number(b.dataset.week);updateOptions()});
+document.getElementById("teacherBtn").onclick=()=>{updateOptions();document.getElementById("teacherOverlay").classList.add("open")};
+document.getElementById("closeTeacher").onclick=()=>document.getElementById("teacherOverlay").classList.remove("open");
+document.getElementById("applyTeacher").onclick=()=>{document.getElementById("teacherOverlay").classList.remove("open");resetGame()};
+
+resetGame();
+</script>
+</body>
+</html>
