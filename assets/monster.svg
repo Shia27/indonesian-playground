@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<defs><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="2" flood-opacity=".7"/></filter></defs>
+<g filter="url(#s)">
+ <path d="M28 82 L31 40 Q33 16 50 12 Q67 16 69 40 L72 82 Q50 94 28 82Z" fill="#151614"/>
+ <path d="M38 44 Q50 34 62 44 L62 59 Q50 66 38 59Z" fill="#292b25"/>
+ <circle cx="44" cy="50" r="4" fill="#e5d96a"/><circle cx="56" cy="50" r="4" fill="#e5d96a"/>
+ <path d="M42 68 Q50 73 58 68" fill="none" stroke="#8c3029" stroke-width="4" stroke-linecap="round"/>
+ <path d="M31 80 L20 94 M69 80 L80 94" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+</g></svg>

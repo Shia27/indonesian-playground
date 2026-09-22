@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<defs><filter id="s"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-opacity=".5"/></filter></defs>
+<g filter="url(#s)">
+ <rect x="22" y="10" width="56" height="80" rx="3" fill="#6e7949" stroke="#ddd58a" stroke-width="4"/>
+ <rect x="29" y="17" width="42" height="73" fill="#24251d"/>
+ <rect x="34" y="23" width="32" height="67" fill="#d9d39a"/>
+ <circle cx="59" cy="57" r="4" fill="#514d2a"/>
+ <path d="M42 30 V73" stroke="#f6efb3" stroke-width="3" opacity=".55"/>
+ <text x="50" y="18" text-anchor="middle" font-family="Arial" font-size="8" font-weight="bold" fill="#f5efb5">EXIT</text>
+</g></svg>
